@@ -51,13 +51,13 @@ def detect_letters(image):
 # Actually is able to draw bounding boxes
 def detect_letters_bounding_boxes(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # grayscale
-    print(gray)
+    # print(gray)
     _, thresh = cv2.threshold(gray, 165, 255, cv2.THRESH_BINARY_INV)  # threshold
 
     cv2.imshow("threshold", thresh)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    dilated = cv2.dilate(thresh, kernel, iterations=13)  # dilate
+    dilated = cv2.dilate(thresh, kernel, iterations=7)  # dilate
 
     cv2.imshow("dilated", dilated)
 
