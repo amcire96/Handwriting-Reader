@@ -26,7 +26,7 @@ def build_model(model_params):
         model.add(Dense(output_dim=model_params.hidden_layer_size))
         model.add(Activation(model_params.activation_fcn))
 
-    model.add(Dense(output_dim=10))
+    model.add(Dense(output_dim=model_params.output_dims))
     model.add(Activation("softmax"))
 
     model.compile(loss="categorical_crossentropy", optimizer="adagrad", metrics=["accuracy"])

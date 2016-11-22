@@ -66,7 +66,7 @@ def detect_letters_bounding_boxes(image):
     contours, hierarchy = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)  # get contours
 
     # for each contour found, draw a rectangle around it on original image
-    for contour in contours:
+    for ind, contour in enumerate(contours):
         # get rectangle bounding contour
         [x, y, w, h] = cv2.boundingRect(contour)
 
@@ -85,8 +85,13 @@ def detect_letters_bounding_boxes(image):
         # if h < 40 or w < 40:
         #     continue
 
+        filename = "bounding_box" + str(ind) + ".jpg"
+        cv2.imwrite(filename, image[y:y + h, x:x + w])
+
         # draw rectangle around contour on original image
         cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 255), 2)
+
+
 
     # write original image with added contours to disk
     # cv2.imshow("Segmented", image)
