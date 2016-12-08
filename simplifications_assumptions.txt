@@ -1,0 +1,6 @@
+Assumptions:
+
+text of certain size
+text/background of certain intensity
+lines of text do not overlap in heights
+letters do not overlap in widths
