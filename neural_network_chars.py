@@ -34,7 +34,7 @@ def build_model(model_params):
     return model
 
 
-def get_digits_data():
+def get_digits_data(full):
     imglist = []
     trainlist = []
     testlist = []
@@ -92,8 +92,12 @@ def get_digits_data():
     train /= 255
     test /= 255
 
+    sample_size = 39
+    if full:
+        sample_size = 55
+
     k = np.arange(62)
-    flattened_labels = np.ndarray.flatten(np.repeat(k, 55)[:, np.newaxis])
+    flattened_labels = np.ndarray.flatten(np.repeat(k, sample_size)[:, np.newaxis])
     train_labels = np.zeros((flattened_labels.size, 62))
     train_labels[np.arange(flattened_labels.size), flattened_labels] = 1
 
@@ -105,7 +109,10 @@ def get_digits_data():
     # print(train_labels[3499])
     # print(train_labels)
 
-    return x, test, train_labels, test_labels
+    if full:
+        return x, test, train_labels, test_labels
+    else:
+        return train, test, train_labels, test_labels
 
 
 def main():
@@ -118,7 +125,7 @@ def main():
                           num_filters=32)
     model = build_model(model_params)
 
-    train, test, train_labels, test_labels = get_digits_data()
+    train, test, train_labels, test_labels = get_digits_data(True)
 
     print(np.shape(train))
     print(np.shape(test))
