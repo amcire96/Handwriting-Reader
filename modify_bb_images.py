@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
 
+
 # Character dataset iamges are 1200x900 and not all are centered
 # Goal is to change image dimensions to match these and probably dilate?
-
 def process_image(bounding_box_image, show_intermediate=False):
     # image = cv2.imread(bounding_box_image_filename)
     image = cv2.cvtColor(bounding_box_image, cv2.COLOR_BGR2GRAY)
@@ -43,7 +43,8 @@ def process_image(bounding_box_image, show_intermediate=False):
 
     resized = cv2.resize(image, (new_width, new_height))
     # resized = cv2.resize(image, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_CUBIC)
-    cv2.imshow("resized", resized)
+    if show_intermediate:
+        cv2.imshow("resized", resized)
 
     width_diff = final_width - new_width
     height_diff = final_height - new_height
@@ -65,8 +66,6 @@ def process_image(bounding_box_image, show_intermediate=False):
 
     resized = cv2.copyMakeBorder(resized, topBorder, bottomBorder, leftBorder, rightBorder,
                                 cv2.BORDER_CONSTANT, value=[255, 255, 255])
-
-
 
     print(np.shape(resized))
     if show_intermediate:
@@ -96,7 +95,8 @@ def process_image(bounding_box_image, show_intermediate=False):
     if show_intermediate:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-    return image
+    return resized
+
 
 def main():
     filename = "bounding_box3.jpg"
