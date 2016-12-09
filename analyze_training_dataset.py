@@ -2,6 +2,51 @@ import os
 import cv2
 import numpy as np
 
+
+def get_bounding_box(image_file):
+    image = cv2.imread(image_file)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    h, w = np.shape(image)
+
+    minrow = 0
+    maxrow = 0
+    mincol = 0
+    maxcol = 0
+
+    # Simplistic BB is just finding first/last row/col we find a black (0-valued) pixel
+    for i in range(h):
+        # There is a single black pizel in row i
+        if np.min(image[i, :]) == 0:
+            minrow = i
+            break
+
+    for i in range(i, h):
+        # print(str(i) + " " + str(h))
+        # There are only white pixels in row i
+        if np.min(image[i, :]) == 255:
+            maxrow = i
+            break
+    if maxrow == 0:
+        maxrow = h
+
+    for j in range(w):
+        # There is a single black pizel in row i
+        if np.min(image[:, j]) == 0:
+            mincol = j
+            break
+
+    for j in range(j, w):
+        # There are only white pixels in row i
+        if np.min(image[:, j]) == 255:
+            maxcol = j
+            break
+    if maxcol == 0:
+        maxcol = w
+
+    return minrow, maxrow, mincol, maxcol
+
+
 def analyze_char_bounding_boxes(image_dir):
     for sample_dir in os.listdir(image_dir):
         # Weird random file inside dir
@@ -15,50 +60,7 @@ def analyze_char_bounding_boxes(image_dir):
         for image_file in os.listdir(joined_sample_dir):
             full_filename = os.path.join(joined_sample_dir, image_file)
             # print(full_filename)
-            image = cv2.imread(full_filename)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-            h, w = np.shape(image)
-
-            minrow = 0
-            maxrow = 0
-            mincol = 0
-            maxcol = 0
-
-            # Simplistic BB is just finding first/last row/col we find a black (0-valued) pixel
-            for i in range(h):
-                # There is a single black pizel in row i
-                if np.min(image[i, :]) == 0:
-                    minrow = i
-                    break
-
-            for i in range(i, h):
-                # print(str(i) + " " + str(h))
-                # There are only white pixels in row i
-                if np.min(image[i, :]) == 255:
-                    maxrow = i
-                    break
-            if maxrow == 0:
-                maxrow = h
-
-            for j in range(w):
-                # There is a single black pizel in row i
-                if np.min(image[:, j]) == 0:
-                    mincol = j
-                    break
-
-            for j in range(j, w):
-                # There are only white pixels in row i
-                if np.min(image[:, j]) == 255:
-                    maxcol = j
-                    break
-            if maxcol == 0:
-                maxcol = w
-
-            # print(minrow)
-            # print(maxrow)
-            # print(mincol)
-            # print(maxcol)
+            minrow, maxrow, mincol, maxcol = get_bounding_box(full_filename)
 
             widths.append(maxcol - mincol)
             heights.append(maxrow - minrow)
@@ -73,8 +75,41 @@ def analyze_char_bounding_boxes(image_dir):
               (sample_dir, np.average(heights), np.std(heights), np.average(widths), np.std(widths)))
 
 
+def trim_training_data(image_file):
+    minrow, maxrow, mincol, maxcol = get_bounding_box(image_file)
+    image = cv2.imread(image_file)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    no_white_space_image = image[minrow:maxrow, mincol:maxcol]
+    # cv2.imshow("cut down", no_white_space_image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    return no_white_space_image
+
+
+def trim_and_write(current_dir, new_dir):
+    i = 0
+    for sample_dir in os.listdir(current_dir):
+        # Weird random file inside dir
+        if "txt" in sample_dir:
+            continue
+        joined_sample_dir = os.path.join(current_dir, sample_dir)
+
+        for image_file in os.listdir(joined_sample_dir):
+            full_filename = os.path.join(joined_sample_dir, image_file)
+            trimmed_image = trim_training_data(full_filename)
+
+            full_output_filename = os.path.join(new_dir, sample_dir, image_file)
+
+            cv2.imwrite(full_output_filename, trimmed_image)
+
+            i += 1
+            print(i)
+
+
 def main():
-    analyze_char_bounding_boxes("character_data/Hnd/Img")
+    # analyze_char_bounding_boxes("character_data/Hnd/Img")
+    # trim_training_data("character_data/Hnd/Img/Sample001/img001-001.png")
+    trim_and_write("character_data/Hnd/Img", "character_data_trim/Hnd/Img")
 
 
 if __name__ == "__main__":
