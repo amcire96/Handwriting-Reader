@@ -81,16 +81,19 @@ def get_digits_data():
 
     # print(train.shape)
 
+    x = x.reshape(x.shape[0], 30, 30, 1)
     train = train.reshape(train.shape[0], 30, 30, 1)
     test = test.reshape(test.shape[0], 30, 30, 1)
 
+    x = x.astype('float')
     train = train.astype('float32')
     test = test.astype('float32')
+    x /= 255
     train /= 255
     test /= 255
 
     k = np.arange(62)
-    flattened_labels = np.ndarray.flatten(np.repeat(k, 39)[:, np.newaxis])
+    flattened_labels = np.ndarray.flatten(np.repeat(k, 55)[:, np.newaxis])
     train_labels = np.zeros((flattened_labels.size, 62))
     train_labels[np.arange(flattened_labels.size), flattened_labels] = 1
 
@@ -102,7 +105,7 @@ def get_digits_data():
     # print(train_labels[3499])
     # print(train_labels)
 
-    return train, test, train_labels, test_labels
+    return x, test, train_labels, test_labels
 
 
 def main():
@@ -122,8 +125,9 @@ def main():
     print(np.shape(train_labels))
     print(np.shape(test_labels))
 
-    model.fit(train, train_labels, batch_size=64, nb_epoch=50,
-              validation_data=(test, test_labels))
+    model.fit(train, train_labels, batch_size=64, nb_epoch=50,)
+              # validation_data=(test, test_labels))
+    model.save('id30_nhl2_hls128_nf32.h5')
     scores = model.evaluate(test, test_labels)
     print("Error = %.2f%%" %(100-scores[1]*100))
 
