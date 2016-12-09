@@ -40,15 +40,15 @@ def get_digits_data():
     testlist = []
 
     chardir = 'character_data_trim/Hnd/Img'
-    for directory in os.listdir(chardir):
+    for directory in sorted(os.listdir(chardir)):
         counter = 1
         dirpath = os.path.join(chardir, directory)
         if ".DS_Store" not in directory and ".txt~" not in directory:
-            for filename in os.listdir(dirpath):
+            for filename in sorted(os.listdir(dirpath)):
                 if ".DS_Store" not in filename:
                     filepath = os.path.join(dirpath, filename)
                     img = cv2.imread(filepath)
-                    height, width = np.shape(img)
+                    #height, width = np.shape(img)
                     #img = resize(image, None, fx=20/width, fy=20/height)
                     #print(filename)
                     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -81,8 +81,8 @@ def get_digits_data():
 
     # print(train.shape)
 
-    train = train.reshape(train.shape[0], 1200, 900, 1)
-    test = test.reshape(test.shape[0], 1200, 900, 1)
+    train = train.reshape(train.shape[0], 30, 30, 1)
+    test = test.reshape(test.shape[0], 30, 30, 1)
 
     train = train.astype('float32')
     test = test.astype('float32')
@@ -109,7 +109,7 @@ def main():
     print("START")
 
 
-    model_params = Params(input_dimsh=900, input_dimsw=1200, output_dims=62,
+    model_params = Params(input_dimsh=30, input_dimsw=30, output_dims=62,
                           num_hidden_layers=2, hidden_layer_size=128,
                           activation_fcn="relu",
                           num_filters=32)
@@ -122,7 +122,7 @@ def main():
     print(np.shape(train_labels))
     print(np.shape(test_labels))
 
-    model.fit(train, train_labels, batch_size=64, nb_epoch=30,
+    model.fit(train, train_labels, batch_size=64, nb_epoch=50,
               validation_data=(test, test_labels))
     scores = model.evaluate(test, test_labels)
     print("Error = %.2f%%" %(100-scores[1]*100))
