@@ -81,65 +81,46 @@ def trim_training_data(image_file):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     no_white_space_image = image[minrow:maxrow, mincol:maxcol]
 
-    w,h = np.shape(no_white_space_image)
-    scaling_factor = min(20 / float(w), 20 / float(h))
-
-    new_width = scaling_factor * w
-    new_height = scaling_factor * h
-
-    print(new_width)
-    print(new_height)
-
-    resized_image = cv2.resize(image, dsize=(int(round(new_width)), int(round(new_height))), interpolation=cv2.INTER_CUBIC)
-    w, h = np.shape(resized_image)
-    print(np.shape(resized_image))
-
-    width_diff = 20 - w
-    height_diff = 20 - h
-
-    print(width_diff)
-    print(height_diff)
-
-    leftBorder = width_diff / 2
-    rightBorder = width_diff / 2
-    topBorder = height_diff / 2
-    bottomBorder = height_diff / 2
-
-    if width_diff % 2 == 1:
-        rightBorder += 1
-
-    if height_diff % 2 == 1:
-        bottomBorder += 1
-
-    image = cv2.copyMakeBorder(image, topBorder, bottomBorder, leftBorder, rightBorder,
-                               cv2.BORDER_CONSTANT, value=[255,255,255])
-
-    print(np.shape(image))
-
-    cv2.imshow("cut down", image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    return no_white_space_image
+    height, width = np.shape(no_white_space_image)
+    if height>width:
+        ratio = float(width)/height
+        unpadded_image = cv2.resize(no_white_space_image, dsize=(int(round(20*ratio)), 20))
+        padding = 20-round(20*ratio)
+        left_padding = int(padding/2)
+        right_padding = int(round(padding/2))
+        final_image = cv2.copyMakeBorder(unpadded_image,0,0,left_padding,right_padding,cv2.BORDER_CONSTANT, value=[255,255,255])
+    else:
+        ratio = float(height)/width
+        unpadded_image = cv2.resize(no_white_space_image, dsize=(20, int(round(20*ratio))))
+        padding = 20-round(20*ratio)
+        top_padding = int(padding/2)
+        bottom_padding = int(round(padding/2))
+        final_image = cv2.copyMakeBorder(unpadded_image,top_padding,bottom_padding,0,0,cv2.BORDER_CONSTANT, value=[255,255,255])
+    # cv2.imshow("cut down", no_white_space_image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    return final_image
 
 
 def trim_and_write(current_dir, new_dir):
     i = 0
     for sample_dir in os.listdir(current_dir):
         # Weird random file inside dir
-        if "txt" in sample_dir:
+        if "txt" in sample_dir or ".DS_Store" in sample_dir:
             continue
         joined_sample_dir = os.path.join(current_dir, sample_dir)
 
         for image_file in os.listdir(joined_sample_dir):
-            full_filename = os.path.join(joined_sample_dir, image_file)
-            trimmed_image = trim_training_data(full_filename)
+            if ".DS_Store" not in image_file:
+                full_filename = os.path.join(joined_sample_dir, image_file)
+                trimmed_image = trim_training_data(full_filename)
 
-            full_output_filename = os.path.join(new_dir, sample_dir, image_file)
+                full_output_filename = os.path.join(new_dir, sample_dir, image_file)
 
-            # cv2.imwrite(full_output_filename, trimmed_image)
+                cv2.imwrite(full_output_filename, trimmed_image)
 
-            i += 1
-            print(i)
+                i += 1
+                print(i)
 
 
 def main():

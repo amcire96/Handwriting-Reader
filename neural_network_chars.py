@@ -39,7 +39,7 @@ def get_digits_data():
     trainlist = []
     testlist = []
 
-    chardir = 'character_data/Hnd/Img'
+    chardir = 'character_data_trim/Hnd/Img'
     for directory in os.listdir(chardir):
         counter = 1
         dirpath = os.path.join(chardir, directory)
@@ -48,6 +48,8 @@ def get_digits_data():
                 if ".DS_Store" not in filename:
                     filepath = os.path.join(dirpath, filename)
                     img = cv2.imread(filepath)
+                    height, width = np.shape(img)
+                    #img = resize(image, None, fx=20/width, fy=20/height)
                     #print(filename)
                     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                     imglist.append(gray)
