@@ -70,7 +70,7 @@ def get_letter_ordering(bounding_box_coordinates):
     for i, line in enumerate(distances):
         final_ordering.append([])
         curr_word = [order[i][0]]
-        max_width_letter = max(widths[i])
+        max_width_letter = sorted(widths[i])[int(len(widths[i]) * .75)]
         for j, distance in enumerate(line):
             # print(curr_word)
             if distance < max_width_letter:
