@@ -84,15 +84,15 @@ def trim_training_data(image_file):
     height, width = np.shape(no_white_space_image)
     if height>width:
         ratio = float(width)/height
-        unpadded_image = cv2.resize(no_white_space_image, dsize=(int(round(20*ratio)), 20))
-        padding = 20-round(20*ratio)
+        unpadded_image = cv2.resize(no_white_space_image, dsize=(int(round(30*ratio)), 30))
+        padding = 30-round(30*ratio)
         left_padding = int(padding/2)
         right_padding = int(round(padding/2))
         final_image = cv2.copyMakeBorder(unpadded_image,0,0,left_padding,right_padding,cv2.BORDER_CONSTANT, value=[255,255,255])
     else:
         ratio = float(height)/width
-        unpadded_image = cv2.resize(no_white_space_image, dsize=(20, int(round(20*ratio))))
-        padding = 20-round(20*ratio)
+        unpadded_image = cv2.resize(no_white_space_image, dsize=(30, int(round(30*ratio))))
+        padding = 30-round(30*ratio)
         top_padding = int(padding/2)
         bottom_padding = int(round(padding/2))
         final_image = cv2.copyMakeBorder(unpadded_image,top_padding,bottom_padding,0,0,cv2.BORDER_CONSTANT, value=[255,255,255])
