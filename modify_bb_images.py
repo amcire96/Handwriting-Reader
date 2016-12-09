@@ -8,10 +8,8 @@ def process_image(bounding_box_image, show_intermediate=False):
     # image = cv2.imread(bounding_box_image_filename)
     image = cv2.cvtColor(bounding_box_image, cv2.COLOR_BGR2GRAY)
     # print(np.shape(image))
-    (w, h) = np.shape(image)
+    h, w = np.shape(image)
 
-    # ultimately want to scale to 1200x900
-    # in training dataset, BB of images are about 350 by 300
     scaling_factor = min(350/float(w), 300/float(h))
     # print(scaling_factor)
 
@@ -32,28 +30,68 @@ def process_image(bounding_box_image, show_intermediate=False):
     if show_intermediate:
         cv2.imshow("final", image)
 
-    # print(np.shape(image))
+    final_width = 20
+    final_height = 20
 
-    # need to pad the image with white to make it 1200x900
-    widthDiff = 1200-np.shape(image)[1]
-    heightDiff = 900-np.shape(image)[0]
+    h, w = np.shape(image)
+    scaling_factor = min(final_width / float(w), final_height / float(h))
+    new_width = int(round(w * scaling_factor))
+    new_height = int(round(h * scaling_factor))
 
-    leftBorder = widthDiff / 2
-    rightBorder = widthDiff / 2
-    topBorder = heightDiff / 2
-    bottomBorder = heightDiff / 2
+    print(new_width)
+    print(new_height)
 
-    if widthDiff % 2 == 1:
+    resized = cv2.resize(image, (new_width, new_height))
+    # resized = cv2.resize(image, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_CUBIC)
+    cv2.imshow("resized", resized)
+
+    width_diff = final_width - new_width
+    height_diff = final_height - new_height
+    print(width_diff)
+    print(height_diff)
+
+    leftBorder = width_diff / 2
+    rightBorder = width_diff / 2
+    topBorder = height_diff / 2
+    bottomBorder = height_diff / 2
+    if width_diff % 2 == 1:
         rightBorder += 1
 
-    if heightDiff % 2 == 1:
+    if height_diff % 2 == 1:
         bottomBorder += 1
 
-    image = cv2.copyMakeBorder(image, topBorder, bottomBorder, leftBorder, rightBorder,
-                               cv2.BORDER_CONSTANT, value=[255,255,255])
+    print(leftBorder)
+    print(rightBorder)
 
+    resized = cv2.copyMakeBorder(resized, topBorder, bottomBorder, leftBorder, rightBorder,
+                                cv2.BORDER_CONSTANT, value=[255, 255, 255])
+
+
+
+    print(np.shape(resized))
     if show_intermediate:
-        cv2.imshow("final-rescaled", image)
+        cv2.imshow("20x20", resized)
+    #
+    # need to pad the image with white to make it 1200x900
+    # widthDiff = 1200-np.shape(image)[1]
+    # heightDiff = 900-np.shape(image)[0]
+    #
+    # leftBorder = widthDiff / 2
+    # rightBorder = widthDiff / 2
+    # topBorder = heightDiff / 2
+    # bottomBorder = heightDiff / 2
+    #
+    # if widthDiff % 2 == 1:
+    #     rightBorder += 1
+    #
+    # if heightDiff % 2 == 1:
+    #     bottomBorder += 1
+    #
+    # image = cv2.copyMakeBorder(image, topBorder, bottomBorder, leftBorder, rightBorder,
+    #                            cv2.BORDER_CONSTANT, value=[255,255,255])
+    #
+    # if show_intermediate:
+    #     cv2.imshow("final-rescaled", image)
 
     if show_intermediate:
         cv2.waitKey(0)
@@ -61,7 +99,7 @@ def process_image(bounding_box_image, show_intermediate=False):
     return image
 
 def main():
-    filename = "bounding_box1.jpg"
+    filename = "bounding_box3.jpg"
     image = cv2.imread(filename)
     image = process_image(image, True)
 

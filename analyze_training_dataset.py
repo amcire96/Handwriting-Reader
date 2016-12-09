@@ -80,9 +80,45 @@ def trim_training_data(image_file):
     image = cv2.imread(image_file)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     no_white_space_image = image[minrow:maxrow, mincol:maxcol]
-    # cv2.imshow("cut down", no_white_space_image)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+
+    w,h = np.shape(no_white_space_image)
+    scaling_factor = min(20 / float(w), 20 / float(h))
+
+    new_width = scaling_factor * w
+    new_height = scaling_factor * h
+
+    print(new_width)
+    print(new_height)
+
+    resized_image = cv2.resize(image, dsize=(int(round(new_width)), int(round(new_height))), interpolation=cv2.INTER_CUBIC)
+    w, h = np.shape(resized_image)
+    print(np.shape(resized_image))
+
+    width_diff = 20 - w
+    height_diff = 20 - h
+
+    print(width_diff)
+    print(height_diff)
+
+    leftBorder = width_diff / 2
+    rightBorder = width_diff / 2
+    topBorder = height_diff / 2
+    bottomBorder = height_diff / 2
+
+    if width_diff % 2 == 1:
+        rightBorder += 1
+
+    if height_diff % 2 == 1:
+        bottomBorder += 1
+
+    image = cv2.copyMakeBorder(image, topBorder, bottomBorder, leftBorder, rightBorder,
+                               cv2.BORDER_CONSTANT, value=[255,255,255])
+
+    print(np.shape(image))
+
+    cv2.imshow("cut down", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     return no_white_space_image
 
 
@@ -100,7 +136,7 @@ def trim_and_write(current_dir, new_dir):
 
             full_output_filename = os.path.join(new_dir, sample_dir, image_file)
 
-            cv2.imwrite(full_output_filename, trimmed_image)
+            # cv2.imwrite(full_output_filename, trimmed_image)
 
             i += 1
             print(i)
