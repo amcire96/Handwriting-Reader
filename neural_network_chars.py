@@ -34,12 +34,19 @@ def build_model(model_params):
     return model
 
 
-def get_digits_data(full):
+# image_size can only be 30 or 20
+def get_digits_data(full, image_size=30):
     imglist = []
     trainlist = []
     testlist = []
 
-    chardir = 'character_data_trim/Hnd/Img'
+    if image_size == 30:
+        chardir = 'character_data_trim/Hnd/Img'
+    elif image_size == 20:
+        chardir = 'character_data_trim_20/Hnd/Img'
+    else:
+        print("ERROR")
+        return
     for directory in sorted(os.listdir(chardir)):
         counter = 1
         dirpath = os.path.join(chardir, directory)
@@ -81,9 +88,9 @@ def get_digits_data(full):
 
     # print(train.shape)
 
-    x = x.reshape(x.shape[0], 30, 30, 1)
-    train = train.reshape(train.shape[0], 30, 30, 1)
-    test = test.reshape(test.shape[0], 30, 30, 1)
+    x = x.reshape(x.shape[0], image_size, image_size, 1)
+    train = train.reshape(train.shape[0], image_size, image_size, 1)
+    test = test.reshape(test.shape[0], image_size, image_size, 1)
 
     x = x.astype('float')
     train = train.astype('float32')
@@ -119,7 +126,7 @@ def run_on_seventy_thirty_split(model_params):
 
     model = build_model(model_params)
 
-    train, test, train_labels, test_labels = get_digits_data(full=False)
+    train, test, train_labels, test_labels = get_digits_data(full=False, image_size=model_params.input_dimsw)
     print(np.shape(train))
     print(np.shape(test))
     print(np.shape(train_labels))
@@ -135,7 +142,7 @@ def run_on_seventy_thirty_split(model_params):
 def generate_model(model_params, model_name):
     model = build_model(model_params)
 
-    train, test, train_labels, test_labels = get_digits_data(full=True)
+    train, test, train_labels, test_labels = get_digits_data(full=True, image_size=model_params.input_dimsw)
     print(np.shape(train))
     print(np.shape(test))
     print(np.shape(train_labels))
@@ -151,7 +158,7 @@ def cross_validation(model_params, k=5):
     num_images_of_each_char = 55
     size_of_partition = int(num_images_of_each_char / k)
 
-    train, _, train_labels, _ = get_digits_data(full=True)
+    train, _, train_labels, _ = get_digits_data(full=True, image_size=model_params.input_dimsw)
 
     scores = []
 
@@ -193,7 +200,7 @@ def cross_validation(model_params, k=5):
 def main():
     print("START")
 
-    model_params = Params(input_dimsh=30, input_dimsw=30, output_dims=62,
+    model_params = Params(input_dimsh=20, input_dimsw=20, output_dims=62,
                           num_hidden_layers=2, hidden_layer_size=128,
                           activation_fcn="relu",
                           num_filters=32, batch_size=64, nb_epoch=50)

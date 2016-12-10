@@ -75,7 +75,7 @@ def analyze_char_bounding_boxes(image_dir):
               (sample_dir, np.average(heights), np.std(heights), np.average(widths), np.std(widths)))
 
 
-def trim_training_data(image_file):
+def trim_training_data(image_file, dims=30):
     minrow, maxrow, mincol, maxcol = get_bounding_box(image_file)
     image = cv2.imread(image_file)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -84,15 +84,15 @@ def trim_training_data(image_file):
     height, width = np.shape(no_white_space_image)
     if height>width:
         ratio = float(width)/height
-        unpadded_image = cv2.resize(no_white_space_image, dsize=(int(round(30*ratio)), 30))
-        padding = 30-round(30*ratio)
+        unpadded_image = cv2.resize(no_white_space_image, dsize=(int(round(dims*ratio)), dims))
+        padding = dims-round(dims*ratio)
         left_padding = int(padding/2)
         right_padding = int(round(padding/2))
         final_image = cv2.copyMakeBorder(unpadded_image,0,0,left_padding,right_padding,cv2.BORDER_CONSTANT, value=[255,255,255])
     else:
         ratio = float(height)/width
-        unpadded_image = cv2.resize(no_white_space_image, dsize=(30, int(round(30*ratio))))
-        padding = 30-round(30*ratio)
+        unpadded_image = cv2.resize(no_white_space_image, dsize=(dims, int(round(dims*ratio))))
+        padding = dims-round(dims*ratio)
         top_padding = int(padding/2)
         bottom_padding = int(round(padding/2))
         final_image = cv2.copyMakeBorder(unpadded_image,top_padding,bottom_padding,0,0,cv2.BORDER_CONSTANT, value=[255,255,255])
@@ -102,7 +102,7 @@ def trim_training_data(image_file):
     return final_image
 
 
-def trim_and_write(current_dir, new_dir):
+def trim_and_write(current_dir, new_dir, dims=30):
     i = 0
     for sample_dir in os.listdir(current_dir):
         # Weird random file inside dir
@@ -113,7 +113,7 @@ def trim_and_write(current_dir, new_dir):
         for image_file in os.listdir(joined_sample_dir):
             if ".DS_Store" not in image_file:
                 full_filename = os.path.join(joined_sample_dir, image_file)
-                trimmed_image = trim_training_data(full_filename)
+                trimmed_image = trim_training_data(full_filename, dims)
 
                 full_output_filename = os.path.join(new_dir, sample_dir, image_file)
 
@@ -126,7 +126,7 @@ def trim_and_write(current_dir, new_dir):
 def main():
     # analyze_char_bounding_boxes("character_data/Hnd/Img")
     # trim_training_data("character_data/Hnd/Img/Sample001/img001-001.png")
-    trim_and_write("character_data/Hnd/Img", "character_data_trim/Hnd/Img")
+    trim_and_write("character_data/Hnd/Img", "character_data_trim_20/Hnd/Img", dims=20)
 
 
 if __name__ == "__main__":
