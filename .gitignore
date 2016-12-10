@@ -1,6 +1,7 @@
 .idea
 character_data
 character_data_trim
+character_data_trim_20
 *.DS_Store
 *.zip
 *.h5
