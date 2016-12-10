@@ -3,3 +3,4 @@ character_data
 character_data_trim
 *.DS_Store
 *.zip
+*.h5

@@ -8,7 +8,7 @@ import os
 
 Params = namedtuple("Params", ["input_dimsh", "input_dimsw", "output_dims",
                                "num_hidden_layers", "hidden_layer_size",
-                               "activation_fcn", "num_filters"])
+                               "activation_fcn", "num_filters", "batch_size", "nb_epoch"])
 
 
 def build_model(model_params):
@@ -115,28 +115,94 @@ def get_digits_data(full):
         return train, test, train_labels, test_labels
 
 
-def main():
-    print("START")
+def run_on_seventy_thirty_split(model_params):
 
-
-    model_params = Params(input_dimsh=30, input_dimsw=30, output_dims=62,
-                          num_hidden_layers=2, hidden_layer_size=128,
-                          activation_fcn="relu",
-                          num_filters=32)
     model = build_model(model_params)
 
-    train, test, train_labels, test_labels = get_digits_data(True)
-
+    train, test, train_labels, test_labels = get_digits_data(full=False)
     print(np.shape(train))
     print(np.shape(test))
     print(np.shape(train_labels))
     print(np.shape(test_labels))
 
-    model.fit(train, train_labels, batch_size=64, nb_epoch=50,)
-              # validation_data=(test, test_labels))
-    model.save('id30_nhl2_hls128_nf32.h5')
+    validation_data = (test, test_labels)
+    model.fit(train, train_labels, batch_size=64, nb_epoch=50, validation_data=validation_data)
+
     scores = model.evaluate(test, test_labels)
-    print("Error = %.2f%%" %(100-scores[1]*100))
+    print("Error = %.2f%%" % (100 - scores[1] * 100))
+
+
+def generate_model(model_params, model_name):
+    model = build_model(model_params)
+
+    train, test, train_labels, test_labels = get_digits_data(full=True)
+    print(np.shape(train))
+    print(np.shape(test))
+    print(np.shape(train_labels))
+    print(np.shape(test_labels))
+
+    model.fit(train, train_labels, batch_size=model_params.batch_size, nb_epoch=model_params.nb_epoch)
+    model.save(model_name)
+    # scores = model.evaluate(test, test_labels)
+    # print("Error = %.2f%%" % (100 - scores[1] * 100))
+
+
+def cross_validation(model_params, k=5):
+    num_images_of_each_char = 55
+    size_of_partition = int(num_images_of_each_char / k)
+
+    train, _, train_labels, _ = get_digits_data(full=True)
+
+    errors = []
+
+    for i in range(k):
+        curr_interval = []
+        compliment_of_interval = []
+
+        model = build_model(model_params)
+
+        for j in range(62):
+            curr_interval += range(j * num_images_of_each_char + i * size_of_partition, j * num_images_of_each_char + (i + 1) * size_of_partition)
+
+        for j in range(62 * 55):
+            if j not in curr_interval:
+                compliment_of_interval.append(j)
+
+        print(curr_interval)
+        print(compliment_of_interval)
+
+        curr_validation_features = train[curr_interval, :, :, :]
+        curr_training_features = train[compliment_of_interval, :, :, :]
+
+        curr_validation_labels = train_labels[curr_interval, :]
+        curr_training_labels = train_labels[compliment_of_interval, :]
+
+        print(np.shape(curr_training_features))
+        print(np.shape(curr_validation_features))
+        print(np.shape(curr_training_labels))
+        print(np.shape(curr_validation_labels))
+
+        model.fit(curr_training_features, curr_training_labels, batch_size=model_params.batch_size, nb_epoch=model_params.nb_epoch)
+        scores = model.evaluate(curr_validation_features, curr_validation_labels)
+        errors.append(scores)
+    print(np.average(np.array(errors)))
+
+
+def main():
+    print("START")
+
+    model_params = Params(input_dimsh=30, input_dimsw=30, output_dims=62,
+                          num_hidden_layers=2, hidden_layer_size=128,
+                          activation_fcn="relu",
+                          num_filters=32, batch_size=64, nb_epoch=50)
+
+    # run_on_seventy_thirty_split(model_params)
+    # generate_model(model_params, 'id30_nhl2_hls128_nf32.h5')
+    cross_validation(model_params, k=5)
+
+
+
+
 
 
 if __name__ == "__main__":
