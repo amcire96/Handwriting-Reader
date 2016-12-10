@@ -11,7 +11,7 @@ model = models.load_model("id30_nhl2_hls128_nf32_tanh_cleaned.h5")
 
 
 def main():
-    image_file = "test.jpg"
+    image_file = "test2.jpg"
     image, bounding_boxes, bounding_boxes_dimensions = extract_letters_from_image.detect_letters_bounding_boxes(image_file)
     processed_bounding_boxes = []
     for bounding_box in bounding_boxes:
@@ -22,6 +22,7 @@ def main():
         # cv2.destroyAllWindows()
 
     ordering = get_letter_ordering.get_letter_ordering(bounding_boxes_dimensions)
+    print(ordering)
     final_text = []
     for line in ordering:
         curr_line = []
