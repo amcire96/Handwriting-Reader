@@ -201,7 +201,7 @@ def main():
     print("START")
 
     model_params = Params(input_dimsh=20, input_dimsw=20, output_dims=62,
-                          num_hidden_layers=2, hidden_layer_size=128,
+                          num_hidden_layers=5, hidden_layer_size=128,
                           activation_fcn="relu",
                           num_filters=32, batch_size=64, nb_epoch=50)
 

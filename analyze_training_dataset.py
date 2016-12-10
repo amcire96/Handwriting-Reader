@@ -21,13 +21,15 @@ def get_bounding_box(image_file):
             minrow = i
             break
 
-    for i in range(i, h):
+    for i in range(h-1, i, -1):
+        # print(i)
         # print(str(i) + " " + str(h))
-        # There are only white pixels in row i
-        if np.min(image[i, :]) == 255:
+        # There are only white pixels in row i and prev row has black pixel
+        if np.min(image[i, :]) == 255 and np.min(image[i-1, :]) == 0:
             maxrow = i
             break
     if maxrow == 0:
+        # print("HERE")
         maxrow = h
 
     for j in range(w):
@@ -36,13 +38,18 @@ def get_bounding_box(image_file):
             mincol = j
             break
 
-    for j in range(j, w):
+    for j in range(w-1, j, -1):
         # There are only white pixels in row i
-        if np.min(image[:, j]) == 255:
+        if np.min(image[:, j]) == 255 and np.min(image[:, j-1]) == 0:
             maxcol = j
             break
     if maxcol == 0:
+        # print("HERE2")
         maxcol = w
+    # cv2.rectangle(image, (mincol, minrow), (maxcol, maxrow), 0, 2)
+    # cv2.imshow("asdf", image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     return minrow, maxrow, mincol, maxcol
 
@@ -126,8 +133,8 @@ def trim_and_write(current_dir, new_dir, dims=30):
 def main():
     # analyze_char_bounding_boxes("character_data/Hnd/Img")
     # trim_training_data("character_data/Hnd/Img/Sample001/img001-001.png")
-    trim_and_write("character_data/Hnd/Img", "character_data_trim_20/Hnd/Img", dims=20)
-
+    # trim_and_write("character_data/Hnd/Img", "character_data_trim_20/Hnd/Img", dims=20)
+    trim_and_write("character_data/Hnd/Img", "character_data_trim/Hnd/Img", dims=30)
 
 if __name__ == "__main__":
     main()

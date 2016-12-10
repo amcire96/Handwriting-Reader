@@ -1,3 +1,4 @@
+import numpy as np
 
 
 def convert_to_char(prediction):
@@ -9,7 +10,13 @@ def convert_to_char(prediction):
         prediction_char = chr(ord('a') + prediction - 36)
     return prediction_char
 
-def predict_letter(image, model):
 
-    prediction = model.predict(image)
-    print(convert_to_char(prediction))
+def predict_letter(image, model):
+    h, w = np.shape(image)
+    # print(np.shape(image))
+    image = image.reshape(1, h, w, 1)
+    [prediction] = model.predict(image)
+    # print(prediction)
+    prediction_val = prediction.tolist().index(1)
+    # print(prediction_val)
+    return convert_to_char(prediction_val)

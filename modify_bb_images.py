@@ -4,7 +4,7 @@ import numpy as np
 
 # Character dataset iamges are 1200x900 and not all are centered
 # Goal is to change image dimensions to match these and probably dilate?
-def process_image(bounding_box_image, show_intermediate=False):
+def process_image(bounding_box_image, dimensions=30, show_intermediate=False):
     # image = cv2.imread(bounding_box_image_filename)
     image = cv2.cvtColor(bounding_box_image, cv2.COLOR_BGR2GRAY)
     # print(np.shape(image))
@@ -30,16 +30,16 @@ def process_image(bounding_box_image, show_intermediate=False):
     if show_intermediate:
         cv2.imshow("final", image)
 
-    final_width = 20
-    final_height = 20
+    final_width = dimensions
+    final_height = dimensions
 
     h, w = np.shape(image)
     scaling_factor = min(final_width / float(w), final_height / float(h))
     new_width = int(round(w * scaling_factor))
     new_height = int(round(h * scaling_factor))
 
-    print(new_width)
-    print(new_height)
+    # print(new_width)
+    # print(new_height)
 
     resized = cv2.resize(image, (new_width, new_height))
     # resized = cv2.resize(image, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_CUBIC)
@@ -48,8 +48,8 @@ def process_image(bounding_box_image, show_intermediate=False):
 
     width_diff = final_width - new_width
     height_diff = final_height - new_height
-    print(width_diff)
-    print(height_diff)
+    # print(width_diff)
+    # print(height_diff)
 
     leftBorder = width_diff / 2
     rightBorder = width_diff / 2
@@ -61,13 +61,13 @@ def process_image(bounding_box_image, show_intermediate=False):
     if height_diff % 2 == 1:
         bottomBorder += 1
 
-    print(leftBorder)
-    print(rightBorder)
+    # print(leftBorder)
+    # print(rightBorder)
 
     resized = cv2.copyMakeBorder(resized, topBorder, bottomBorder, leftBorder, rightBorder,
                                 cv2.BORDER_CONSTANT, value=[255, 255, 255])
 
-    print(np.shape(resized))
+    # print(np.shape(resized))
     if show_intermediate:
         cv2.imshow("20x20", resized)
     #
@@ -101,7 +101,7 @@ def process_image(bounding_box_image, show_intermediate=False):
 def main():
     filename = "bounding_box3.jpg"
     image = cv2.imread(filename)
-    image = process_image(image, True)
+    image = process_image(image, 20, True)
 
 
 if __name__ == "__main__":
