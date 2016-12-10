@@ -41,11 +41,9 @@ def get_digits_data(full, image_size=30):
     testlist = []
 
     if image_size == 30:
-        chardir = 'character_data_trim/Hnd/Img'
+        chardir = 'character_data_trim_clean/Hnd/Img'
     elif image_size == 20:
         chardir = 'character_data_trim_20/Hnd/Img'
-    elif image_size == 40:
-        chardir = 'character_data_trim_40/Hnd/Img'
     else:
         print("ERROR")
         return
@@ -103,7 +101,7 @@ def get_digits_data(full, image_size=30):
 
     sample_size = 39
     if full:
-        sample_size = 56
+        sample_size = 55
 
     k = np.arange(62)
     flattened_labels = np.ndarray.flatten(np.repeat(k, sample_size)[:, np.newaxis])
@@ -157,7 +155,7 @@ def generate_model(model_params, model_name):
 
 
 def cross_validation(model_params, k=5):
-    num_images_of_each_char = 56
+    num_images_of_each_char = 55
     size_of_partition = int(num_images_of_each_char / k)
 
     train, _, train_labels, _ = get_digits_data(full=True, image_size=model_params.input_dimsw)
@@ -204,11 +202,11 @@ def main():
 
     model_params = Params(input_dimsh=30, input_dimsw=30, output_dims=62,
                           num_hidden_layers=2, hidden_layer_size=128,
-                          activation_fcn="relu",
+                          activation_fcn="tanh",
                           num_filters=32, batch_size=64, nb_epoch=50)
 
     # run_on_seventy_thirty_split(model_params)
-    generate_model(model_params, 'id30_nhl2_hls128_nf32_relu_cleaned.h5')
+    generate_model(model_params, 'id30_nhl2_hls128_nf32_tanh_cleaned.h5')
     # cross_validation(model_params, k=5)
 
 

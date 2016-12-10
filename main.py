@@ -7,11 +7,11 @@ import get_letter_ordering
 import predict_letters
 
 
-model = models.load_model("id30_nhl2_hls128_nf32_tanh_cleaned.h5")
+model = models.load_model("id30_nhl2_hls128_nf32_tanh_clean.h5")
 
 
 def main():
-    image_file = "test2.jpg"
+    image_file = "test.jpg"
     image, bounding_boxes, bounding_boxes_dimensions = extract_letters_from_image.detect_letters_bounding_boxes(image_file)
     processed_bounding_boxes = []
     for bounding_box in bounding_boxes:
