@@ -44,6 +44,8 @@ def get_digits_data(full, image_size=30):
         chardir = 'character_data_trim/Hnd/Img'
     elif image_size == 20:
         chardir = 'character_data_trim_20/Hnd/Img'
+    elif image_size == 40:
+        chardir = 'character_data_trim_40/Hnd/Img'
     else:
         print("ERROR")
         return
@@ -200,13 +202,13 @@ def cross_validation(model_params, k=5):
 def main():
     print("START")
 
-    model_params = Params(input_dimsh=20, input_dimsw=20, output_dims=62,
+    model_params = Params(input_dimsh=30, input_dimsw=30, output_dims=62,
                           num_hidden_layers=2, hidden_layer_size=128,
                           activation_fcn="tanh",
                           num_filters=32, batch_size=64, nb_epoch=50)
 
     # run_on_seventy_thirty_split(model_params)
-    generate_model(model_params, 'id20_nhl2_hls128_nf32_tanh_cleaned.h5')
+    generate_model(model_params, 'id30_nhl2_hls128_nf32_tanh_cleaned.h5')
     # cross_validation(model_params, k=5)
 
 
