@@ -76,7 +76,9 @@ def get_letter_ordering(bounding_box_coordinates):
             if distance < max_width_letter:
                 curr_word.append(order[i][j+1])
             else:
+                print(curr_word)
                 final_ordering[i].append(curr_word)
+                curr_word = [order[i][j+1]]
         if curr_word != []:
             final_ordering[i].append(curr_word)
 

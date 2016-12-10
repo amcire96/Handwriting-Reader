@@ -17,13 +17,14 @@ def detect_letters_test(image_file):
     # image_sobel = cv2.Sobel(image, cv2.CV_8U, 1, 0, 3, 1, 0, cv2.BORDER_DEFAULT)
     # cv2.imshow("image_sobel", image_sobel)
 
-    _, image_threshold = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY_INV)
+    _, image_threshold = cv2.threshold(image, 165, 255, cv2.THRESH_BINARY_INV)
     # _, image_threshold = cv2.threshold(image_sobel, 0, 255, cv2.THRESH_OTSU+cv2.THRESH_BINARY)
     cv2.imshow("image_threshold", image_threshold)
     element = cv2.getStructuringElement(cv2.MORPH_CROSS, (30, 30))
     image_threshold = cv2.morphologyEx(image_threshold, cv2.MORPH_CLOSE, element)
 
     cv2.imshow("morphologyex", image_threshold)
+    cv2.imwrite("morphologyex.jpg", image_threshold)
 
     contours, _ = cv2.findContours(image_threshold, 0, 1)
     for contour in contours:
@@ -33,8 +34,8 @@ def detect_letters_test(image_file):
         [x, y, w, h] = cv2.boundingRect(approx_contour)
 
         # discard areas that are too large
-        if h > 300 and w > 300:
-            continue
+        # if h > 300 and w > 300:
+        #     continue
 
         # discard areas that are too small
         if h < 40 or w < 40:
@@ -55,6 +56,7 @@ def detect_letters_bounding_boxes(image_file, show_intermediate=False):
     copy_for_bounding_boxes = cv2.imread(image_file)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # grayscale
     # print(gray)
+    # _, thresh = cv2.threshold(gray, 165, 255, cv2.THRESH_BINARY_INV)  # threshold
     _, thresh = cv2.threshold(gray, 165, 255, cv2.THRESH_BINARY_INV)  # threshold
 
     if show_intermediate:
@@ -65,6 +67,8 @@ def detect_letters_bounding_boxes(image_file, show_intermediate=False):
 
     if show_intermediate:
         cv2.imshow("dilated", dilated)
+
+    cv2.imwrite("dilated.jpg", dilated)
 
     # dilated = thresh
 
@@ -88,10 +92,6 @@ def detect_letters_bounding_boxes(image_file, show_intermediate=False):
         # discard areas that are too large
         if h > 300 and w > 300:
             continue
-        #
-        # # discard areas that are too small
-        # if h < 40 or w < 40:
-        #     continue
 
         # filename = "bounding_box" + str(ind) + ".jpg"
         # cv2.imwrite(filename, image[y:y + h, x:x + w])
@@ -124,8 +124,7 @@ def main():
     image_file = "test.jpg"
 
     # print(image.shape)
-    # detect_letters(image)
-    # detect_letters_bounding_boxes(image)
+    # detect_letters_test(image_file)
 
     new_image, bounding_boxes, bounding_boxes_dimensions = detect_letters_bounding_boxes(image_file, True)
     cv2.imwrite("test_segmented.jpg", new_image)
