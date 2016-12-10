@@ -17,9 +17,9 @@ def main():
     for bounding_box in bounding_boxes:
         processed_bb = modify_bb_images.process_image(bounding_box, dimensions=30)
         processed_bounding_boxes.append(processed_bb)
-        cv2.imshow("bb", processed_bb)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.imshow("bb", processed_bb)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
     ordering = get_letter_ordering.get_letter_ordering(bounding_boxes_dimensions)
     final_text = []
