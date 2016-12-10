@@ -185,7 +185,9 @@ def cross_validation(model_params, k=5):
         model.fit(curr_training_features, curr_training_labels, batch_size=model_params.batch_size, nb_epoch=model_params.nb_epoch)
         loss, accuracy = model.evaluate(curr_validation_features, curr_validation_labels)
         scores.append(accuracy)
-    print(np.average(np.array(scores)))
+    for i in range(k):
+        print("\n" + str(scores[i]))
+    print("\n"+str(np.average(np.array(scores))))
 
 
 def main():
