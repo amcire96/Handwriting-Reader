@@ -153,7 +153,7 @@ def cross_validation(model_params, k=5):
 
     train, _, train_labels, _ = get_digits_data(full=True)
 
-    errors = []
+    scores = []
 
     for i in range(k):
         curr_interval = []
@@ -183,9 +183,9 @@ def cross_validation(model_params, k=5):
         print(np.shape(curr_validation_labels))
 
         model.fit(curr_training_features, curr_training_labels, batch_size=model_params.batch_size, nb_epoch=model_params.nb_epoch)
-        scores = model.evaluate(curr_validation_features, curr_validation_labels)
-        errors.append(scores)
-    print(np.average(np.array(errors)))
+        loss, accuracy = model.evaluate(curr_validation_features, curr_validation_labels)
+        scores.append(accuracy)
+    print(np.average(np.array(scores)))
 
 
 def main():
