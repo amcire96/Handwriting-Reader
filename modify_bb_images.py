@@ -22,7 +22,7 @@ def process_image(bounding_box_image, dimensions=30, show_intermediate=False):
         cv2.imshow("thres", image_threshold)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    dilated = cv2.dilate(image_threshold, kernel, iterations=7)  # dilate
+    dilated = cv2.dilate(image_threshold, kernel, iterations=15)  # dilate
     if show_intermediate:
         cv2.imshow("dilated",dilated)
 

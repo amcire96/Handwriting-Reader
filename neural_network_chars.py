@@ -201,13 +201,13 @@ def main():
     print("START")
 
     model_params = Params(input_dimsh=20, input_dimsw=20, output_dims=62,
-                          num_hidden_layers=5, hidden_layer_size=128,
-                          activation_fcn="relu",
+                          num_hidden_layers=2, hidden_layer_size=128,
+                          activation_fcn="tanh",
                           num_filters=32, batch_size=64, nb_epoch=50)
 
     # run_on_seventy_thirty_split(model_params)
-    # generate_model(model_params, 'id30_nhl2_hls128_nf32.h5')
-    cross_validation(model_params, k=5)
+    generate_model(model_params, 'id20_nhl2_hls128_nf32_tanh_cleaned.h5')
+    # cross_validation(model_params, k=5)
 
 
 
