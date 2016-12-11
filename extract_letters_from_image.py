@@ -24,7 +24,7 @@ def detect_letters_test(image_file):
     image_threshold = cv2.morphologyEx(image_threshold, cv2.MORPH_CLOSE, element)
 
     cv2.imshow("morphologyex", image_threshold)
-    cv2.imwrite("morphologyex.jpg", image_threshold)
+    cv2.imwrite("segmentation/morphologyex.jpg", image_threshold)
 
     contours, _ = cv2.findContours(image_threshold, 0, 1)
     for contour in contours:
@@ -34,8 +34,8 @@ def detect_letters_test(image_file):
         [x, y, w, h] = cv2.boundingRect(approx_contour)
 
         # discard areas that are too large
-        # if h > 300 and w > 300:
-        #     continue
+        if h > 300 and w > 300:
+            continue
 
         # discard areas that are too small
         if h < 40 or w < 40:
@@ -68,7 +68,7 @@ def detect_letters_bounding_boxes(image_file, show_intermediate=False):
     if show_intermediate:
         cv2.imshow("dilated", dilated)
 
-    cv2.imwrite("dilated.jpg", dilated)
+    cv2.imwrite("segmentation/dilated.jpg", dilated)
 
     # dilated = thresh
 
@@ -127,7 +127,7 @@ def main():
     # detect_letters_test(image_file)
 
     new_image, bounding_boxes, bounding_boxes_dimensions = detect_letters_bounding_boxes(image_file, True)
-    cv2.imwrite("test_segmented.jpg", new_image)
+    cv2.imwrite("segmentation/test_segmented.jpg", new_image)
     cv2.imshow("Segmented", new_image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

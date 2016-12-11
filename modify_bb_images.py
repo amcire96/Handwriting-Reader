@@ -7,6 +7,11 @@ import numpy as np
 def process_image(bounding_box_image, dimensions=30, show_intermediate=False):
     # image = cv2.imread(bounding_box_image_filename)
     image = cv2.cvtColor(bounding_box_image, cv2.COLOR_BGR2GRAY)
+
+    if show_intermediate:
+        cv2.imshow("original", image)
+        cv2.imwrite("modify_bb/original.jpg", image)
+
     # print(np.shape(image))
     h, w = np.shape(image)
 
@@ -16,19 +21,23 @@ def process_image(bounding_box_image, dimensions=30, show_intermediate=False):
     image = cv2.resize(image, None, fx=scaling_factor, fy=scaling_factor, interpolation = cv2.INTER_CUBIC)
     if show_intermediate:
         cv2.imshow("resized", image)
+        cv2.imwrite("modify_bb/resized.jpg", image)
 
     _, image_threshold = cv2.threshold(image, 175, 255, cv2.THRESH_BINARY_INV)
     if show_intermediate:
         cv2.imshow("thres", image_threshold)
+        cv2.imwrite("modify_bb/thres.jpg", image_threshold)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     dilated = cv2.dilate(image_threshold, kernel, iterations=15)  # dilate
     if show_intermediate:
         cv2.imshow("dilated",dilated)
+        cv2.imwrite("modify_bb/dilated.jpg", dilated)
 
     image = (255-dilated)
     if show_intermediate:
         cv2.imshow("final", image)
+        cv2.imwrite("modify_bb/final.jpg", image)
 
     final_width = dimensions
     final_height = dimensions
@@ -45,6 +54,7 @@ def process_image(bounding_box_image, dimensions=30, show_intermediate=False):
     # resized = cv2.resize(image, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_CUBIC)
     if show_intermediate:
         cv2.imshow("resized", resized)
+        cv2.imwrite("modify_bb/final_resized.jpg", resized)
 
     width_diff = final_width - new_width
     height_diff = final_height - new_height
@@ -70,6 +80,7 @@ def process_image(bounding_box_image, dimensions=30, show_intermediate=False):
     # print(np.shape(resized))
     if show_intermediate:
         cv2.imshow("20x20", resized)
+        cv2.imwrite("modify_bb/20x20.jpg", resized)
     #
     # need to pad the image with white to make it 1200x900
     # widthDiff = 1200-np.shape(image)[1]
@@ -99,7 +110,7 @@ def process_image(bounding_box_image, dimensions=30, show_intermediate=False):
 
 
 def main():
-    filename = "bounding_box3.jpg"
+    filename = "bounding_box1.jpg"
     image = cv2.imread(filename)
     image = process_image(image, 20, True)
 

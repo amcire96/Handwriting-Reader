@@ -37,7 +37,7 @@ def get_bounding_box(image_file):
 
     for j in range(w):
         # There is a single black pizel in row i
-        if np.min(image[:, j]) < 50:
+        if np.min(image[:, j]) != 255:
             mincol = j
             break
 

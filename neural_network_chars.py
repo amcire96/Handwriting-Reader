@@ -103,7 +103,7 @@ def get_digits_data(full, image_size=30):
 
     sample_size = 39
     if full:
-        sample_size = 56
+        sample_size = 55
 
     k = np.arange(62)
     flattened_labels = np.ndarray.flatten(np.repeat(k, sample_size)[:, np.newaxis])
@@ -157,7 +157,7 @@ def generate_model(model_params, model_name):
 
 
 def cross_validation(model_params, k=5):
-    num_images_of_each_char = 56
+    num_images_of_each_char = 55
     size_of_partition = int(num_images_of_each_char / k)
 
     train, _, train_labels, _ = get_digits_data(full=True, image_size=model_params.input_dimsw)
@@ -202,14 +202,14 @@ def cross_validation(model_params, k=5):
 def main():
     print("START")
 
-    model_params = Params(input_dimsh=30, input_dimsw=30, output_dims=62,
-                          num_hidden_layers=2, hidden_layer_size=128,
+    model_params = Params(input_dimsh=20, input_dimsw=20, output_dims=62,
+                          num_hidden_layers=5, hidden_layer_size=128,
                           activation_fcn="relu",
                           num_filters=32, batch_size=64, nb_epoch=50)
 
     # run_on_seventy_thirty_split(model_params)
-    generate_model(model_params, 'id30_nhl2_hls128_nf32_relu_cleaned.h5')
-    # cross_validation(model_params, k=5)
+    # generate_model(model_params, 'id30_nhl2_hls128_nf32_tanh_cleaned2.h5')
+    cross_validation(model_params, k=5)
 
 
 
