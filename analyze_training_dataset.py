@@ -18,7 +18,7 @@ def get_bounding_box(image_file):
     for i in range(h):
         # There is a single black pizel in row i
         # print(np.min(image[i, :]))
-        if np.min(image[i, :]) == 0:
+        if np.min(image[i, :]) != 255:
             minrow = i
             break
 
@@ -27,7 +27,7 @@ def get_bounding_box(image_file):
         # print(str(i) + " " + str(h))
         # There are only white pixels in row i and prev row has black pixel
         # print(np.min(image[i-1,:]))
-        if np.min(image[i, :]) == 255 and np.min(image[i-1, :]) == 0:
+        if np.min(image[i, :]) == 255 and np.min(image[i-1, :]) != 255:
             # print("HERE")
             maxrow = i
             break
@@ -37,13 +37,13 @@ def get_bounding_box(image_file):
 
     for j in range(w):
         # There is a single black pizel in row i
-        if np.min(image[:, j]) == 0:
+        if np.min(image[:, j]) != 255:
             mincol = j
             break
 
     for j in range(w-1, j, -1):
         # There are only white pixels in row i
-        if np.min(image[:, j]) == 255 and np.min(image[:, j-1]) == 0:
+        if np.min(image[:, j]) == 255 and np.min(image[:, j-1]) != 255:
             maxcol = j
             break
     if maxcol == 0:
