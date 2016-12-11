@@ -31,10 +31,14 @@ def slant_image(img, slant_factor, direction):
 	image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	height, width = np.shape(image)
 	slant = slant_factor+1
-	slant_steps = height/slant
+	slant_steps = height/slant + 1
+	print(height)
+	print(slant_steps)
 	for i in range(height):
 		if i%slant_steps == 0:
 			slant -= 1
+		#print(np.shape(image[i]))
+		#print(image[i])
 		image[i] = slide_row(image[i], slant, direction)
 	return image
 
@@ -42,8 +46,8 @@ def slant_image(img, slant_factor, direction):
 def main():
 	test = cv2.imread("img001-001.png")
 	squish_test = squish_image(test, 0.7)
-	slant_left_test = slant_image(test, 50, "left")
-	slant_right_test = slant_image(test, 50, "right")
+	slant_left_test = slant_image(test, 200, "left")
+	slant_right_test = slant_image(test, 200, "right")
 	cv2.imwrite("squish_test.jpg", squish_test)
 	cv2.imwrite("slant_left_test.jpg", slant_left_test)
 	cv2.imwrite("slant_right_test.jpg", slant_right_test)
