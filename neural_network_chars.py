@@ -41,11 +41,9 @@ def get_digits_data(full, image_size=30):
     testlist = []
 
     if image_size == 30:
-        chardir = 'character_data_trim/Hnd/Img'
+        chardir = 'character_data_trim_clean/Hnd/Img'
     elif image_size == 20:
         chardir = 'character_data_trim_20/Hnd/Img'
-    elif image_size == 40:
-        chardir = 'character_data_trim_40/Hnd/Img'
     else:
         print("ERROR")
         return
@@ -210,6 +208,7 @@ def main():
     # run_on_seventy_thirty_split(model_params)
     # generate_model(model_params, 'id30_nhl2_hls128_nf32_tanh_cleaned2.h5')
     cross_validation(model_params, k=5)
+
 
 
 

@@ -136,7 +136,7 @@ def trim_and_write(current_dir, new_dir, dims=30):
 def main():
     # analyze_char_bounding_boxes("character_data/Hnd/Img")
     # trim_training_data("character_data/Hnd/Img/Sample001/img001-001.png")
-    trim_and_write("character_data/Hnd/Img", "character_data_trim/Hnd/Img", dims=30)
+    trim_and_write("character_data_clean/Hnd/Img", "character_data_trim_clean/Hnd/Img", dims=30)
     #trim_and_write("character_data/Hnd/Img", "character_data_trim/Hnd/Img", dims=30)
 
 if __name__ == "__main__":
